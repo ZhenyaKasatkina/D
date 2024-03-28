@@ -27,7 +27,7 @@ class Product(models.Model):
     created_at = models.DateField(auto_now_add=False,           # default=date.today,
                                   verbose_name='Дата создания (записи в БД)')
     updated_at = models.DateField(auto_now=False, verbose_name='Дата последнего изменения (записи в БД)')
-    manufactured_at = models.DateField(verbose_name='Дата производства продукта', **NULLABLE)
+    # manufactured_at = models.DateField(verbose_name='Дата производства продукта', **NULLABLE)
 
     def __str__(self):
         # Строковое отображение объекта
