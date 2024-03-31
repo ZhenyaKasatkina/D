@@ -3,6 +3,26 @@ from django.db import models
 NULLABLE = {'blank': True, 'null': True}
 
 
+class MyContact(models.Model):
+    """ Контакты владельца сайта """
+    contact_name = models.CharField(max_length=150, verbose_name='Наименование')
+    country = models.CharField(max_length=100, verbose_name='Страна')
+    inn = models.PositiveBigIntegerField(verbose_name="ИНН")
+    address = models.TextField(verbose_name='Почтовый адрес', **NULLABLE)
+    email = models.EmailField(verbose_name='Адрес электронной почты')
+    logo = models.ImageField(upload_to='preview/', verbose_name='Логотип сайта', **NULLABLE)
+    created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания (записи в БД)')
+    updated_at = models.DateField(auto_now=True, verbose_name='Дата последнего изменения (записи в БД)')
+
+    def __str__(self):
+        # Строковое отображение объекта
+        return f'{self.contact_name}, ИНН: {self.inn} ({self.country}, {self.country}, {self.email})'
+
+    class Meta:
+        verbose_name = 'контакт'            # Настройка для наименования одного объекта
+        verbose_name_plural = 'контакты'    # Настройка для наименования набора объектов
+
+
 class Category(models.Model):
     """ Категории """
     category_name = models.CharField(max_length=150, verbose_name='наименование')
