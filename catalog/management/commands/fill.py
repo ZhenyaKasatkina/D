@@ -36,28 +36,26 @@ class Command(BaseCommand):
         Product.objects.all().delete()  # Удалите все продукты
         Category.objects.all().delete()  # Удалите все категории
 
-        product_for_create = []  # Списки для хранения объектов
+        # Списки для хранения объектов
         category_for_create = []
+        product_for_create = []
 
-        try:
-            for category in Command.json_read_categories():
-                category_for_create.append(Category(id=category["pk"],
-                                                    category_name=category["fields"]["category_name"])
-                                           )
-            # Создаем объекты в базе с помощью метода bulk_create()
-            Category.objects.bulk_create(category_for_create)
-        except (ValueError, FileNotFoundError):
-            pass
+        for category in Command.json_read_categories():
+            category_for_create.append(Category(id=category["pk"],
+                                                category_name=category["fields"]["category_name"],
+                                                description=category["fields"]["description"])
+                                       )
+        # Создаем объекты в базе с помощью метода bulk_create()
+        Category.objects.bulk_create(category_for_create)
 
-        try:
-            for product in Command.json_read_products():
-                product_for_create.append(Product(id=product["pk"],
-                                                  product_name=product["fields"]["product_name"],
-                                                  price=product["fields"]["price"],
-                                                  category=product["fields"]["category"])
-                                          )
-                # Создаем объекты в базе с помощью метода bulk_create()
-                Product.objects.bulk_create(product_for_create)
+        for product in Command.json_read_products():
+            product_for_create.append(Product(id=product["pk"],
+                                              product_name=product["fields"]["product_name"],
+                                              price=product["fields"]["price"],
+                                              preview=product["fields"]["preview"],
+                                              category=Category.objects.get(pk=product["fields"]["category"]),
+                                              description=product["fields"]["description"])
+                                      )
 
-        except (ValueError, FileNotFoundError):
-            pass
+        # Создаем объекты в базе с помощью метода bulk_create()
+        Product.objects.bulk_create(product_for_create)

@@ -1,6 +1,11 @@
 from django.contrib import admin
 
-from catalog.models import Category, Product
+from catalog.models import Category, Product, MyContact
+
+
+@admin.register(MyContact)
+class MyContactAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contact_name', 'country', 'inn', 'address', 'email', 'logo',)
 
 
 @admin.register(Category)
