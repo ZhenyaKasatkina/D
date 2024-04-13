@@ -1,0 +1,22 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+
+<div class="col-offset-12">
+    <div class="card box-shadow">
+        <div class="card-header">
+            <h2 class="my-0 font-weight-normal text-center text-warning">Начнём ...</h2>
+        </div>
+
+        <div class="card-body">
+            <form method="post" action="" class="form-floating text-center"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="p-2 btn btn-lg  btn-outline-warning mb-2">Сохранить</button>
+                <a class="p-2 btn btn-outline-warning btn-lg mb-2"
+                   href="{% url 'catalog:blog' %}" role="button">Публиковать не хочу, отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h2 class="display-4">{{ object.title}}</h2>
+    <div class="row">
+        <div class="col-8">
+            <p class="lead">{{ object }}</p>
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <h4 class="row text-warning">Количество просмотров: {{ object.views_count }}</h4>
+
+                <img class="img-thumbnail" src="{{ object.preview|my_media }}">
+            </div>
+
+            <div class="d-grid gap-2">
+                <div class="row">
+                    <a class="btn btn-warning btn-lg mb-6"
+                       href="{% url 'catalog:blog_create' %}"
+                       role="button">Можешь оставить свой блог у нас</a>
+                </div>
+                <div class="row">
+                    <a class="btn btn-warning btn-lg mb-6"
+                       href="{% url 'catalog:blog' %}"
+                       role="button">Блог для любознательных</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
