@@ -23,6 +23,24 @@ class MyContact(models.Model):
         verbose_name_plural = 'контакты'    # Настройка для наименования набора объектов
 
 
+class UserContacts(models.Model):
+    """ Контакты, сообщение, поступившие от пользователя """
+    name = models.CharField(max_length=150, verbose_name='Имя')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    email = models.EmailField(verbose_name='Адрес электронной почты')
+    message = models.TextField(verbose_name='сообщение', **NULLABLE)
+    created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания (записи в БД)')
+    updated_at = models.DateField(auto_now=True, verbose_name='Дата последнего изменения (записи в БД)')
+
+    def __str__(self):
+        # Строковое отображение объекта
+        return f'{self.name} ({self.phone}, {self.email}): {self.message}'
+
+    class Meta:
+        verbose_name = 'контакт'            # Настройка для наименования одного объекта
+        verbose_name_plural = 'контакты'    # Настройка для наименования набора объектов
+
+
 class Category(models.Model):
     """ Категории """
     category_name = models.CharField(max_length=150, verbose_name='наименование')
@@ -33,8 +51,8 @@ class Category(models.Model):
         return f'{self.category_name} ({self.description})'
 
     class Meta:
-        verbose_name = 'Категория'            # Настройка для наименования одного объекта
-        verbose_name_plural = 'Категории'    # Настройка для наименования набора объектов
+        verbose_name = 'категория'            # Настройка для наименования одного объекта
+        verbose_name_plural = 'категории'    # Настройка для наименования набора объектов
 
 
 class Product(models.Model):
@@ -55,3 +73,22 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'продукт'            # Настройка для наименования одного объекта
         verbose_name_plural = 'продукты'    # Настройка для наименования набора объектов
+
+
+class Blog(models.Model):
+    """ Блог """
+    title = models.CharField(max_length=150, verbose_name='заголовок')
+    slug = models.CharField(max_length=150, verbose_name='slug', **NULLABLE)
+    content = models.TextField(verbose_name='содержимое', **NULLABLE)
+    preview = models.ImageField(upload_to='preview/', verbose_name='превью', **NULLABLE)
+    created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания (записи в БД)')
+    is_published = models.BooleanField(default=True, verbose_name='опубликовано')
+    views_count = models.IntegerField(default=0, verbose_name='просмотры')
+
+    def __str__(self):
+        # Строковое отображение объекта
+        return f'{self.title} ({self.views_count}, {self.slug}): {self.content}.'
+
+    class Meta:
+        verbose_name = 'блог'            # Настройка для наименования одного объекта
+        verbose_name_plural = 'блоги'    # Настройка для наименования набора объектов

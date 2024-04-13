@@ -1,0 +1,20 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+
+<div class="col-offset-12">
+    <div class="card box-shadow">
+        <div class="card-header">
+            <h2 class="my-0 font-weight-normal text-center text-warning">Расскажи о своей любилой "Вкусняшке"</h2>
+        </div>
+
+        <div class="card-body">
+            <form method="post" action="" class="form-floating text-center"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-lg  btn-outline-warning">Отправить нам</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
