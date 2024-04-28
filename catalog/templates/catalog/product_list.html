@@ -24,11 +24,9 @@
             <a href="?page=1"></a>
             <a href="?page={{ page_obj.previous_page_number }}" class="text-secondary">Предыдущая</a>
         {% endif %}
-
         <span class="current">
             Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
         </span>
-
         {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}" class="text-secondary">Следующая</a>
             <a href="?page={{ page_obj.paginator.num_pages }}"></a>
@@ -41,6 +39,11 @@
                         <div class="col-8">
                             <ol class="list-unstyled mt-3 mb-6 text-start m-3">
                                 <li><h5> - {{ object|truncatechars:100 }}</h5></li>
+                                {% for ver in active_versions %}
+                                {% if object == ver.product %}
+                                <li><h6> - {{ ver }}</h6></li>
+                                {% endif %}
+                                {% endfor %}
                             </ol>
                         </div>
                         <div class="col-4">
@@ -51,6 +54,7 @@
                                href="/usercontacts/" role="button">Купить</a>
                         </div>
                     </div>
+
                     {% endfor %}
                 </div>
             </div>
@@ -68,6 +72,7 @@
                        href="{% url 'catalog:blog' %}"
                        role="button">Блог для любознательных</a>
                 </div>
+
             </div>
         </div>
     </div>
