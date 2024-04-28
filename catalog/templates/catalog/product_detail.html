@@ -17,13 +17,21 @@
             </div>
         </div>
         <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card mb-4 box-shadow">
+            <div class="card mb-6 box-shadow">
+                <div class="card-header">
+                    <a class="btn btn-warning btn-lg mb-6"
+                       href="{% url 'catalog:product_update' object.pk %}"
+                       role="button">Ты можешь изменить вкусняшку под себя</a>
+                </div>
+            </div>
+            <div class="card mb-6 box-shadow">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal text-center text-warning">Свяжитесь с нами</h4>
+
+                    <a class="btn btn-warning btn-lg mb-6"
+                       href="{% url 'catalog:product_create' %}"
+                       role="button">Напиши свою историю вкусняшки</a>
                 </div>
-                <a class="btn btn-warning btn-lg mb-6"
-                   href="{% url 'catalog:product_create' %}"
-                   role="button">Напиши свою историю вкусняшки</a>
             </div>
         </div>
     </div>

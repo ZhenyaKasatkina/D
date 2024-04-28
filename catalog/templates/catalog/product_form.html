@@ -3,18 +3,56 @@
 
 <div class="col-offset-12">
     <div class="card box-shadow">
-        <div class="card-header">
-            <h2 class="my-0 font-weight-normal text-center text-warning">Расскажи о своей любилой "Вкусняшке"</h2>
-        </div>
 
-        <div class="card-body">
-            <form method="post" action="" class="form-floating text-center"
-                  enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-lg  btn-outline-warning">Отправить нам</button>
-            </form>
-        </div>
+        <form method="post" action="" class="form-floating text-center"
+              enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="my-0 font-weight-normal text-center">Расскажи о своей любилой
+                                "Вкусняшке"</h2>
+                        </div>
+                        <div class="card-body">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <button type="submit" class="btn btn-lg  btn-outline-warning">
+                                            Сохранить
+                                        </button>
+                                    </div>
+                                    <div class="col-6">
+                                        <a type="submit" class="btn btn-lg  btn-outline-warning"
+                                           href="{% url 'catalog:homepage' %}">
+                                            Вернуться
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Какая будет версия</h3>
+                        </div>
+                        <div class="card-body">
+                            {{ formset.management_form }}
+                            {% for form in formset.forms %}
+                            {{ form.as_p }}
+                            {% if not forloop.last %}
+                            <hr>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock %}

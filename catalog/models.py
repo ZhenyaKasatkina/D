@@ -75,6 +75,23 @@ class Product(models.Model):
         verbose_name_plural = 'продукты'    # Настройка для наименования набора объектов
 
 
+class Version(models.Model):
+    """Версия"""
+    product = models.ForeignKey(Product, related_name='version', on_delete=models.CASCADE,
+                                verbose_name='продукт', **NULLABLE)
+    version_number = models.CharField(max_length=5, default='Aa001', verbose_name='номер версии')
+    version_name = models.CharField(max_length=150, verbose_name='название версии')
+    is_active = models.BooleanField(default=True, verbose_name='активная версия')
+
+    def __str__(self):
+        # Строковое отображение объекта
+        return f'версия: {self.version_number} ({self.version_name})'
+
+    class Meta:
+        verbose_name = 'версия'            # Настройка для наименования одного объекта
+        verbose_name_plural = 'версии'    # Настройка для наименования набора объектов
+
+
 class Blog(models.Model):
     """ Блог """
     title = models.CharField(max_length=150, verbose_name='заголовок')
