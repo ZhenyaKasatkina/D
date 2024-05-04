@@ -1,8 +1,7 @@
 from django.core.exceptions import ValidationError
 
 from django import forms
-from django.forms import BooleanField
-
+from django.forms import BooleanField, BaseInlineFormSet
 
 from catalog.models import Product, Version
 
@@ -20,7 +19,7 @@ class StyleFormMixin:
 class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ("created_at", "updated_at",)
+        exclude = ("created_at", "updated_at", "owner")
 
     def clean_product_name(self):
         cleaned_data = self.cleaned_data.get('product_name')
@@ -40,28 +39,21 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 
 
 class VersionForm(StyleFormMixin, forms.ModelForm):
+    """ VersionForm"""
+
     class Meta:
         model = Version
         fields = "__all__"
 
-    def clean_is_active(self):
-        # active = []
-        cleaned_data = self.cleaned_data.get('is_active')
-        # print(f'сейчас {cleaned_data}')
-        active_version = Version.objects.filter(is_active=self.cleaned_data.get('is_active'),
-                                                product=self.cleaned_data.get('product')).exists()
 
-        # active.append(cleaned_data) if cleaned_data else None
-        # print(len(active))
-        # if len(active) == 1 and cleaned_data and active_version:
-        if cleaned_data and active_version:
-            raise ValidationError(f"Активная версия может быть только одна у продукта. \n"
-                                  f"Снимите галочку активности с предыдущей версии, сохрани, \n"
-                                  f"и только потом выбирай активную")
-        return cleaned_data
+class VersionFormSet(BaseInlineFormSet):
+    """ Проверка между формами"""
+    def clean(self):
+        super().clean()
+        active_versions = [form.cleaned_data for form in self.forms
+                           if form.cleaned_data.get('is_active')]
+                           # and not form.cleaned_data.get('DELETE', False)]
+        if len(active_versions) > 1:
+            raise ValidationError("Может быть только одна активная форма")
 
-
-
-
-
-
+        return active_versions
