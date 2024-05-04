@@ -33,28 +33,34 @@
         {% endif %}
     </span>
                     </div>
-
                     {% for object in object_list %}
                     <div class="row text-align:left">
                         <div class="col-8">
                             <ol class="list-unstyled mt-3 mb-6 text-start m-3">
                                 <li><h5> - {{ object|truncatechars:100 }}</h5></li>
+                                  {% if user.is_authenticated %}
+                                {% if object.owner %}
+                                <li><h6 class="text-secondary">Создатель вкусняшки: {{ object.owner }}</h6></li>
+                                {% endif %}
                                 {% for ver in active_versions %}
                                 {% if object == ver.product %}
-                                <li><h6> - {{ ver }}</h6></li>
+                                <li><h6 class="text-success-emphasis"> - {{ ver }}</h6></li>
                                 {% endif %}
                                 {% endfor %}
+                                {% endif %}
                             </ol>
                         </div>
                         <div class="col-4">
+
                             <a class="btn btn-outline-warning btn-lg mb-2"
                                href="{% url 'catalog:view_product' object.pk %}"
                                role="button">Показать</a>
+                              {% if user.is_authenticated %}
                             <a class="p-2 btn btn-outline-warning btn-lg mb-2"
                                href="/usercontacts/" role="button">Купить</a>
+                            {% endif %}
                         </div>
                     </div>
-
                     {% endfor %}
                 </div>
             </div>

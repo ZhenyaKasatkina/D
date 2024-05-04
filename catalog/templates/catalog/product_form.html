@@ -13,15 +13,18 @@
                             <h2 class="my-0 font-weight-normal text-center">Расскажи о своей любилой
                                 "Вкусняшке"</h2>
                         </div>
+
                         <div class="card-body">
                             {% csrf_token %}
                             {{ form.as_p }}
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col-6">
+                                        {% if user.is_authenticated %}
                                         <button type="submit" class="btn btn-lg  btn-outline-warning">
                                             Сохранить
                                         </button>
+                                        {% endif %}
                                     </div>
                                     <div class="col-6">
                                         <a type="submit" class="btn btn-lg  btn-outline-warning"
@@ -42,6 +45,7 @@
                         </div>
                         <div class="card-body">
                             {{ formset.management_form }}
+                            {{ formset.non_form_errors }}
                             {% for form in formset.forms %}
                             {{ form.as_p }}
                             {% if not forloop.last %}

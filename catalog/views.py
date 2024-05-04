@@ -1,13 +1,15 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
-# from django.shortcuts import render   #ДЗ 20.1
+# from django.shortcuts import render   # ДЗ 20.1
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, VersionFormSet
 # from catalog.management.commands.fill import Command   #ДЗ 20.1
 from catalog.models import MyContact, Product, Category, UserContacts, Blog, Version
+from config.settings import EMAIL_HOST_USER
 
 
 class ProductListView(ListView):
@@ -21,18 +23,21 @@ class ProductListView(ListView):
         context_data['category_list'] = Category.objects.all()
         vers = Version.objects.filter(is_active=True)
         context_data['active_versions'] = vers
+        user = self.request.user
+        context_data['user'] = user
         # print(context_data)
         return context_data
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:homepage')
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm,
+                                               extra=1)
         if self.request.method == 'POST':
             context_data["formset"] = VersionFormset(self.request.POST, instance=self.object)
         else:
@@ -43,6 +48,10 @@ class ProductCreateView(CreateView):
         formset = self.get_context_data()["formset"]
         if form.is_valid() and formset.is_valid():
             self.object = form.save()
+            user = self.request.user
+            self.object.owner = user
+            self.object.save()
+            # print(self.object)
             formset.instance = self.object
             formset.save()
         return super().form_valid(form)
@@ -52,19 +61,21 @@ class ProductCreateView(CreateView):
 #     #     print(prod["fields"]["product_name"])
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:homepage')
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        ProductFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        ProductFormset = inlineformset_factory(Product, Version, form=VersionForm,
+                                               formset=VersionFormSet, extra=1)
         if self.request.method == 'POST':
-            print(f'1 ............. {context_data}, {self.request.method}')
+            # print(f'1 ............. {context_data}, {self.request.method}')
             context_data["formset"] = ProductFormset(self.request.POST, instance=self.object)
         else:
             context_data["formset"] = ProductFormset(instance=self.object)
+            # print(context_data["formset"])
         return context_data
 
     def form_valid(self, form):
@@ -79,7 +90,7 @@ class ProductUpdateView(UpdateView):
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     extra_context = {
         'title': 'Вот что ты выбрал',
@@ -153,7 +164,7 @@ class BlogDetailView(DetailView):
             send_mail(
                 "Поздравляю",
                 f"Количество просмотров достигло 100, блог: '{self.object.title}'.",
-                "knopisha.zh@gmail.com",
+                EMAIL_HOST_USER,
                 ["knopisha.zh@gmail.com"],
                 fail_silently=False,
             )

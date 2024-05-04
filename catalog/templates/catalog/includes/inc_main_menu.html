@@ -5,22 +5,48 @@
     <div class="col-3">
     </div>
     <div class="col-3 mx-auto">
-        <h4 class="my-0 text-center mr-md-auto font-weight-normal">{{ title }}</h4>
+        <ol class="list-unstyled mt-3 mb-6 text-start m-3">
+            <li><h4 class="my-0 text-center mr-md-auto font-weight-normal mb-4">{{ title }}</h4></li>
+
+            <li class="my-0 text-center mr-md-auto font-weight-normal mb-4"></li>
+            {% if user.is_authenticated %}
+            <li><h6 class="my-0 text-center text-secondary mr-md-auto font-weight-normal">Пользователь: {{ user }}</h6>
+            </li>
+            {% else %}
+            <li><h6 class="my-0 text-center text-danger mr-md-auto font-weight-normal">
+                Если хочешь посмотреть "Информацию о вкусняшках" купить или создать свою...</h6></li>
+            <li><h6 class="my-0 text-center text-danger mr-md-auto font-weight-normal">
+                авторизируйся на сайте</h6></li>  {% endif %}
+        </ol>
     </div>
     <div class="col-3 mx-auto">
         <nav class="ms-5">
-            <div class="row text-center">
+            <div class="row text-center mb-2">
                 <a class="p-2 btn btn-outline-warning btn-lg" href="/">Главная</a>
             </div>
-            <div class="row text-center">
-
-                <a class="p-2 btn btn-outline-warning btn-lg" href="{% url 'catalog:my_contact' %}" role="button">Контакты</a>
-
+            <div class="row text-center mb-2">
+                <a class="p-2 btn btn-outline-warning btn-lg" href="{% url 'catalog:my_contact' %}"
+                   role="button">Контакты</a>
             </div>
+            {% if user.is_authenticated %}
+            <div class="row text-center mb-2">
+                <a class="p-2 btn btn-outline-warning btn-lg" href="{% url 'users:logout' %}"
+                   role="button">Выйти</a>
+            </div>
+            <div class="row text-center mb-2">
+                <a class="p-2 btn btn-outline-warning btn-lg" href="{% url 'users:profile' %}"
+                   role="button">Профиль</a>
+            </div>
+            {% else %}
+            <div class="row text-center mb-2">
+                <a class="p-2 btn btn-outline-warning btn-lg" href="{% url 'users:login' %}"
+                   role="button">Войти</a>
+            </div>
+            <div class="row text-center mb-2">
+                <a class="p-2 btn btn-outline-warning btn-lg" href="{% url 'users:register' %}"
+                   role="button">Регистрация</a>
+            </div>
+            {% endif %}
         </nav>
     </div>
 </div>
-
-
-
-
