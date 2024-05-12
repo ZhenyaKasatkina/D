@@ -96,6 +96,7 @@ class Product(models.Model):
         **NULLABLE,
         help_text="чья вкусняшка?",
     )
+    is_published = models.BooleanField(default=False, verbose_name="Статус публикации")
 
     def __str__(self):
         # Строковое отображение объекта
@@ -104,6 +105,11 @@ class Product(models.Model):
     class Meta:
         verbose_name = "продукт"  # Настройка для наименования одного объекта
         verbose_name_plural = "продукты"  # Настройка для наименования набора объектов
+        permissions = [
+            ("cancel_published_status", "Can unpublish product"),
+            ("can_edit_description", "Can edit product description"),
+            ("can_edit_category", "Can edit product category")
+        ]
 
 
 class Version(models.Model):

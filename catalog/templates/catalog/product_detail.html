@@ -19,9 +19,11 @@
         <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="card mb-6 box-shadow">
                 <div class="card-header">
+                    {% if perms.catalog.cancel_published_status and perms.catalog.can_edit_description and perms.catalog.can_edit_category or product.owner %}
                     <a class="btn btn-warning btn-lg mb-6"
                        href="{% url 'catalog:product_update' object.pk %}"
                        role="button">Ты можешь изменить вкусняшку под себя</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="card mb-6 box-shadow">

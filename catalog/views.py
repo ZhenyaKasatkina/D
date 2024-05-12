@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 # from django.shortcuts import render   # ДЗ 20.1
@@ -6,7 +7,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm, VersionFormSet
+from catalog.forms import ProductForm, VersionForm, VersionFormSet, ProductModeratorForm
 # from catalog.management.commands.fill import Command   #ДЗ 20.1
 from catalog.models import MyContact, Product, Category, UserContacts, Blog, Version
 from config.settings import EMAIL_HOST_USER
@@ -28,10 +29,13 @@ class ProductListView(ListView):
         # print(context_data)
         return context_data
 
+    def get_queryset(self):
+        return Product.objects.all().order_by('product_name')
+
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    form_class = ProductForm
+    # form_class = ProductForm
     success_url = reverse_lazy('catalog:homepage')
 
     def get_context_data(self, **kwargs):
@@ -89,6 +93,17 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form, formset=formset))
 
+    def get_form_class(self):
+        """Права доступа владельца, менеджера"""
+        user = self.request.user
+        if user == self.object.owner:
+            return ProductForm
+        if (user.has_perm("catalog.cancel_published_status")
+                and user.has_perm("catalog.can_edit_description")
+                and user.has_perm("catalog.can_edit_category")):
+            return ProductModeratorForm
+        raise PermissionDenied
+
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
@@ -115,8 +130,9 @@ class BlogListView(ListView):
     extra_context = {'title': '???  Оказывается это интересно'}
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(PermissionRequiredMixin, CreateView):
     model = Blog
+    permission_required = 'catalog.add_blog'
     extra_context = {'title': 'Отлично! ты хочешь поделиться интересной статьей'}
     fields = ('title', 'preview', 'content', 'is_published')
     success_url = reverse_lazy('catalog:blog')
@@ -129,8 +145,9 @@ class BlogCreateView(CreateView):
             return super().form_valid(form)
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(PermissionRequiredMixin, UpdateView):
     model = Blog
+    permission_required = 'catalog.change_blog'
     extra_context = {'title': 'Что случилось? ты хочешь изменить?'}
     fields = ('title', 'preview', 'content', 'is_published')
     # success_url = reverse_lazy('catalog:blog')
@@ -146,8 +163,9 @@ class BlogUpdateView(UpdateView):
         return reverse('catalog:view_blog', args=[self.kwargs.get("slug")])
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(PermissionRequiredMixin, DeleteView):
     model = Blog
+    permission_required = 'catalog.delete_blog'
     extra_context = {'title': 'Всё  неправда и скучно'}
     success_url = reverse_lazy('catalog:blog')
 
