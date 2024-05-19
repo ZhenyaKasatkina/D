@@ -106,8 +106,11 @@ class Product(models.Model):
         verbose_name = "продукт"  # Настройка для наименования одного объекта
         verbose_name_plural = "продукты"  # Настройка для наименования набора объектов
         permissions = [
+            # может отменять публикацию
             ("cancel_published_status", "Can unpublish product"),
+            # может менять описание продукта
             ("can_edit_description", "Can edit product description"),
+            # может менять категорию продукта
             ("can_edit_category", "Can edit product category")
         ]
 

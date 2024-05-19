@@ -1,0 +1,47 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Категории наших вкусняшек</h1>
+    <p class="lead">Давайте посмотрим какие виды вкусняшек мы выбрали</p>
+</div>
+
+<div class="container">
+    <div class="row text-center">
+        <div class="col-sm-12 col-lg-8 col-md-8">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h2 class="my-0 font-weight-normal text-warning">Для начала есть такие виды ...</h2>
+                </div>
+
+                <div class="row text-align:left">
+                    <div class="card-body"></div>
+
+                    {% for object in object_list %}
+                    <ol class="list-unstyled mt-3 mb-6 text-start m-3">
+                        <li><h6> - {{ object }}</h6></li>
+                    </ol>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+    <div class="col-sm-10 col-lg-3 col-md-10 mx-auto">
+        <div class="d-grid gap-2">
+            <div class="row">
+                <a class="btn btn-warning btn-lg mb-6"
+                   href="{% url 'catalog:homepage' %}"
+                   role="button">Вернуться на главную</a>
+            </div>
+            <div class="row">
+                <a class="btn btn-warning btn-lg mb-6"
+                   href="{% url 'catalog:blog' %}"
+                   role="button">Блог для любознательных</a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
