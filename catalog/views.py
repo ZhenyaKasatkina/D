@@ -10,7 +10,21 @@ from pytils.translit import slugify
 from catalog.forms import ProductForm, VersionForm, VersionFormSet, ProductModeratorForm
 # from catalog.management.commands.fill import Command   #ДЗ 20.1
 from catalog.models import MyContact, Product, Category, UserContacts, Blog, Version
+from catalog.services import get_category_from_cache
 from config.settings import EMAIL_HOST_USER
+
+
+class CategoryListView(ListView):
+    model = Category
+    extra_context = {'title': 'Страница категорий Вкусняшек'}
+
+    # def get_context_data(self, **kwargs):
+    #     context_data = super().get_context_data(**kwargs)
+    #     get_category_from_cache()
+    #     return context_data
+
+    def get_queryset(self):
+        return get_category_from_cache()
 
 
 class ProductListView(ListView):
@@ -35,7 +49,7 @@ class ProductListView(ListView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
-    # form_class = ProductForm
+    form_class = ProductForm
     success_url = reverse_lazy('catalog:homepage')
 
     def get_context_data(self, **kwargs):
@@ -67,7 +81,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
-    form_class = ProductForm
+    # form_class = ProductForm
     success_url = reverse_lazy('catalog:homepage')
 
     def get_context_data(self, **kwargs):
@@ -160,7 +174,7 @@ class BlogUpdateView(PermissionRequiredMixin, UpdateView):
             return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('catalog:view_blog', args=[self.kwargs.get("slug")])
+        return reverse('catalog:blog')
 
 
 class BlogDeleteView(PermissionRequiredMixin, DeleteView):
